@@ -1,0 +1,75 @@
+replicaCount: 1
+
+nameOverride: ""
+fullnameOverride: ""
+
+image:
+  repository: tarikhamarat/algorycode-gateway
+  tag: latest
+  pullPolicy: Always
+
+imagePullSecrets: []
+
+containerPort: 8080
+
+spring:
+  applicationName: algorycode-gateway
+
+service:
+  type: ClusterIP
+  port: 8080
+  annotations: {}
+
+gateway:
+  routes:
+    - id: algorycode-rent-service
+      path: /api/**
+      uri: http://release-name-algorycode-rent-service.namespace.svc.cluster.local:8090
+
+management:
+  endpointsWebExposureInclude: health,info,metrics
+
+extraEnv: []
+
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "100m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"
+
+podSecurityContext: {}
+securityContext: {}
+
+probes:
+  startup:
+    path: /actuator/health/liveness
+    failureThreshold: 30
+    periodSeconds: 5
+    timeoutSeconds: 10
+  readiness:
+    initialDelaySeconds: 15
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
+  liveness:
+    initialDelaySeconds: 30
+    periodSeconds: 20
+    timeoutSeconds: 5
+
+ingress:
+  enabled: false
+  className: traefik
+  annotations:
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - host: api.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: api-example-tls
+      hosts:
+        - api.example.com

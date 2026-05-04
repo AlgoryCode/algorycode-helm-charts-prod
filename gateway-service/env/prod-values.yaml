@@ -1,0 +1,22 @@
+replicaCount: 1
+
+image:
+  repository: tarikhamarat/algorycode-gateway
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: LoadBalancer
+  port: 8080
+  annotations: {}
+
+gateway:
+  routes:
+    - id: algorycode-rent-service
+      path: /api/**
+      uri: http://prod-rent-algorycode-rent-service.algory-prod.svc.cluster.local:8090
+
+ingress:
+  enabled: false
+
+extraEnv: []

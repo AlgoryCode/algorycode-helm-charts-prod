@@ -1,0 +1,36 @@
+fullnameOverride: ""
+
+replicaCount: 1
+
+image:
+  repository: tarikhamarat/algorycode-rent-service
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 8090
+  annotations: {}
+
+spring:
+  applicationName: algorycode-rent-service
+  jpa:
+    ddlAuto: validate
+    showSql: "false"
+
+rabbitmq:
+  host: rabbitmq.algorycode.com
+  port: "5672"
+  virtualHost: "/"
+
+secret:
+  data:
+    springRabbitmqUsername: CHANGEME
+    springRabbitmqPassword: CHANGEME
+    appObjectStorageAccessKey: CHANGEME
+    appObjectStorageSecretKey: CHANGEME
+
+ingress:
+  enabled: false
+
+extraEnv: []

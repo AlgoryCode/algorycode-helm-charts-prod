@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "algorycode-gateway.fullname" . }}-config
+  labels:
+    {{- include "algorycode-gateway.labels" . | nindent 4 }}
+data:
+  application.yml: |
+    server:
+      port: {{ .Values.containerPort }}
+    spring:
+      application:
+        name: {{ .Values.spring.applicationName | quote }}
+      cloud:
+        discovery:
+          enabled: false
+        gateway:
+          routes:
+    {{- range .Values.gateway.routes }}
+            - id: {{ .id | quote }}
+              uri: {{ .uri | quote }}
+              predicates:
+                - {{ printf "Path=%s" .path | quote }}
+    {{- end }}
+    management:
+      endpoints:
+        web:
+          exposure:
+            include: {{ .Values.management.endpointsWebExposureInclude | quote }}
+      endpoint:
+        health:
+          probes:
+            enabled: true

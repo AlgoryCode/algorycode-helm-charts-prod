@@ -1,0 +1,6 @@
+apiVersion: v2
+name: algorycode-gateway
+description: Spring Cloud Gateway — Eureka yok, sabit downstream URI (Kubernetes DNS)
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

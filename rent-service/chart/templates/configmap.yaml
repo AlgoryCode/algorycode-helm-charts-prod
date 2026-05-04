@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "algorycode-rent-service.fullname" . }}-config
+  labels:
+    {{- include "algorycode-rent-service.labels" . | nindent 4 }}
+data:
+  SERVER_PORT: {{ .Values.containerPort | quote }}
+  SPRING_APPLICATION_NAME: {{ .Values.spring.applicationName | quote }}
+  SPRING_JPA_HIBERNATE_DDL_AUTO: {{ .Values.spring.jpa.ddlAuto | quote }}
+  SPRING_JPA_OPEN_IN_VIEW: "false"
+  SPRING_JPA_SHOW_SQL: {{ .Values.spring.jpa.showSql | quote }}
+  SPRING_JPA_PROPERTIES_HIBERNATE_JDBC_TIME_ZONE: "UTC"
+  SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: "org.hibernate.dialect.PostgreSQLDialect"
+  SPRING_RABBITMQ_HOST: {{ .Values.rabbitmq.host | quote }}
+  SPRING_RABBITMQ_PORT: {{ .Values.rabbitmq.port | quote }}
+  SPRING_RABBITMQ_VIRTUAL_HOST: {{ .Values.rabbitmq.virtualHost | quote }}
+  APP_CORS_ALLOWED_ORIGIN_PATTERNS: {{ .Values.app.cors.allowedOriginPatterns | quote }}
+  APP_MAIL_RABBIT_EXCHANGE: {{ .Values.app.mail.rabbit.exchange | quote }}
+  APP_MAIL_RABBIT_ROUTING_KEY: {{ .Values.app.mail.rabbit.routingKey | quote }}
+  APP_MAIL_RABBIT_QUEUE_DLQ: {{ .Values.app.mail.rabbit.queueDlq | quote }}
+  APP_RENTAL_REQUEST_GREEN_INSURANCE_FEE: {{ .Values.app.rentalRequest.greenInsuranceFee | quote }}
+  APP_CONTRACT_TEMPLATE_PATH: {{ .Values.app.contract.templatePath | quote }}
+  APP_CONTRACT_OUTPUT_DIR: {{ .Values.app.contract.outputDir | quote }}
+  APP_CONTRACT_PDF_LINE_VAT_PERCENT: {{ .Values.app.contract.pdfLineVatPercent | default "20" | quote }}
+  {{- $auth := .Values.app.contract.authorization | default dict }}
+  APP_CONTRACT_AUTHORIZATION_TAXABLE_PERSON_NAME: {{ $auth.taxablePersonName | default "" | quote }}
+  APP_CONTRACT_AUTHORIZATION_NIPT_NUMBER: {{ $auth.niptNumber | default "" | quote }}
+  APP_CONTRACT_AUTHORIZATION_REPRESENTATIVE_NAME: {{ $auth.representativeName | default "" | quote }}
+  APP_CONTRACT_AUTHORIZATION_REPRESENTATIVE_BIRTH_PLACE: {{ $auth.representativeBirthPlace | default "" | quote }}
+  APP_CONTRACT_AUTHORIZATION_REPRESENTATIVE_RESIDENCE: {{ $auth.representativeResidence | default "" | quote }}
+  APP_CONTRACT_AUTHORIZATION_REPRESENTATIVE_BIRTH_DATE: {{ $auth.representativeBirthDate | default "" | quote }}
+  APP_CONTRACT_AUTHORIZATION_REPRESENTATIVE_PASSPORT_NO: {{ $auth.representativePassportNo | default "" | quote }}
+  APP_CONTRACT_AUTHORIZATION_FOOTER_COMPANY: {{ $auth.footerCompany | default "" | quote }}
+  APP_CONTRACT_AUTHORIZATION_FOOTER_ADDRESS: {{ $auth.footerAddress | default "" | quote }}
+  APP_CONTRACT_AUTHORIZATION_ROADSIDE_ASSISTANCE_PHONE: {{ $auth.roadsideAssistancePhone | default "+90 510 220 553" | quote }}
+  {{- $wa := .Values.app.whatsapp | default dict }}
+  APP_WHATSAPP_ENABLED: {{ $wa.enabled | default "true" | quote }}
+  APP_WHATSAPP_ADMIN_PHONE_E164: {{ $wa.adminPhoneE164 | default "905312187455" | quote }}
+  APP_WHATSAPP_WEBHOOK_URL: {{ $wa.webhookUrl | default "" | quote }}
+  APP_WHATSAPP_WEBHOOK_BEARER: {{ $wa.webhookAuthBearer | default "" | quote }}
+  APP_WHATSAPP_CALLMEBOT_API_KEY: {{ $wa.callmebotApiKey | default "" | quote }}
+  {{- $os := .Values.app.objectStorage | default dict }}
+  APP_OBJECT_STORAGE_ENABLED: {{ $os.enabled | default "true" | quote }}
+  APP_OBJECT_STORAGE_ENDPOINT: {{ $os.endpoint | default "https://s3.algorycode.com" | quote }}
+  APP_OBJECT_STORAGE_BUCKET: {{ $os.bucket | default "rent" | quote }}
+  APP_OBJECT_STORAGE_KEY_PREFIX: {{ $os.keyPrefix | default "prod" | quote }}
+  APP_OBJECT_STORAGE_PRESIGN_EXPIRY_SECONDS: {{ $os.presignExpirySeconds | default "3600" | quote }}
+  MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "health,info,metrics"
+  MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED: "true"
+  MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS: "when_authorized"
+  MANAGEMENT_HEALTH_LIVENESSSTATE_ENABLED: "true"
+  MANAGEMENT_HEALTH_READINESSSTATE_ENABLED: "true"
+  LOGGING_LEVEL_COM_ALGORYCODE_RENT: {{ .Values.logging.levelRent | quote }}
