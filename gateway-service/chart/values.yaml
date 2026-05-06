@@ -4,7 +4,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 image:
-  repository: tarikhamarat/algorycode-gateway
+  repository: tarikhamarat/gatewayserver
   tag: latest
   pullPolicy: Always
 

@@ -25,7 +25,7 @@ algorycode-helm-charts-prod/
 
 - Kubernetes kümesi (ör. k3s) ve `kubectl` yapılandırması
 - Argo CD kurulu ve **bu Git reposuna erişim** (HTTPS veya SSH)
-- Konteyner imajları (ör. `tarikhamarat/algorycode-rent-service`, `tarikhamarat/algorycode-gateway`) registry’de mevcut
+- Konteyner imajları (ör. `tarikhamarat/algorycode-rent-service`, `tarikhamarat/gatewayserver`) registry’de mevcut
 
 ## Rent servisi (`rent-service`)
 
