@@ -25,8 +25,8 @@ gateway:
     - id: algorycode-rent-service
       path: /api/**
       service:
-        name: prod-rent-algorycode-rent-service
-        namespace: ""
+        name: algorycode-rent-service-prod
+        namespace: algory-prod
         port: 8090
         scheme: http
         clusterDomain: cluster.local

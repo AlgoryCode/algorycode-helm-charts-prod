@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: tarikhamarat/algorycode-gateway
+  repository: tarikhamarat/gatewayserver
   tag: latest
   pullPolicy: Always
 
