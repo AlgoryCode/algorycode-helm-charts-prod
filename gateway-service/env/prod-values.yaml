@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: tarikhamarat/gatewayserver
+  repository: tarikhamarat/algorycode-gateway
   tag: latest
   pullPolicy: Always
 
@@ -15,7 +15,7 @@ gateway:
     - id: algorycode-rent-service
       path: /api/**
       service:
-        name: prod-rent-algorycode-rent-service
+        name: algorycode-rent-service-prod
         namespace: algory-prod
         port: 8090
         scheme: http
