@@ -24,4 +24,6 @@ gateway:
 ingress:
   enabled: false
 
-extraEnv: []
+extraEnv:
+  - name: APP_SERVICES_RENT_URI
+    value: http://algorycode-rent-service-prod.algory-prod.svc.cluster.local:8090
