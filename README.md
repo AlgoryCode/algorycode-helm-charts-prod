@@ -48,12 +48,13 @@ Release adı Argo örneğiyle uyumlu olsun diye **`prod-rent`** kullanıldı; ta
 
 ## Gateway (`gateway-service`)
 
-- Spring Cloud Gateway için `ConfigMap` içinde **`application.yml`** üretilir: `spring.cloud.discovery.enabled: false`, route’lar **`http://...svc.cluster.local:...`** biçiminde.
-- `env/prod-values.yaml` içindeki `gateway.routes[0].uri`, rent Service’in tam DNS adıyla eşleşmelidir. Varsayılan:
-
-  `http://prod-rent-algorycode-rent-service.algory-prod.svc.cluster.local:8090`
-
-- Rent release adını veya namespace’i değiştirirseniz bu URI’yi güncelleyin.
+- Spring Cloud Gateway için `ConfigMap` içinde **`application.yml`** üretilir: `spring.cloud.discovery.enabled: false`.
+- Route hedefi `gateway.routes[].service` alanlarıyla tanımlanır:
+  - `name` (Kubernetes Service adı)
+  - `namespace` (boşsa release namespace)
+  - `port`
+- Chart bu alanlardan URI üretir: `http://<service>.<namespace>.svc.cluster.local:<port>`.
+- İsterseniz `gateway.routes[].uri` vererek bu davranışı override edebilirsiniz.
 - Gateway imajınızın (`spring-cloud-starter-gateway`, actuator) bu yapılandırmayı okuyabilmesi gerekir; **Eureka client** bağımlılığını uygulama kodundan kaldırın.
 
 ### Gateway uygulama kodunda yapılacaklar
@@ -125,6 +126,6 @@ Kaynak kodda Eureka kaldırıldı (`pom.xml` + `application.yml`). Yeni imajı b
 
 ## Sorun giderme
 
-- **502 / bağlantı reddedildi (gateway → rent)**: `gateway.routes[].uri` host adı, rent Service’in tam adı ve namespace ile birebir uyumlu mu kontrol edin.
+- **502 / bağlantı reddedildi (gateway → rent)**: `gateway.routes[].service.name` ve `gateway.routes[].service.namespace` değerleri rent Service adı ve namespace ile birebir uyumlu mu kontrol edin.
 - **ImagePullBackOff**: `imagePullSecrets` veya registry erişimi.
 - **Helm valueFiles Argo’da bulunamadı**: `path` ile `valueFiles` göreli yolu chart klasöründen doğru mu (`../env/prod-values.yaml`).

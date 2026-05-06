@@ -17,8 +17,15 @@ data:
         gateway:
           routes:
     {{- range .Values.gateway.routes }}
+    {{- $serviceConfig := .service | default dict }}
+    {{- $namespace := $serviceConfig.namespace | default $.Release.Namespace }}
+    {{- $port := $serviceConfig.port | default 80 }}
+    {{- $scheme := $serviceConfig.scheme | default "http" }}
+    {{- $clusterDomain := $serviceConfig.clusterDomain | default "cluster.local" }}
+    {{- $serviceName := required "gateway.routes[].service.name is required when gateway.routes[].uri is not set" $serviceConfig.name }}
+    {{- $uriFromService := printf "%s://%s.%s.svc.%s:%v" $scheme $serviceName $namespace $clusterDomain (int $port) }}
             - id: {{ .id | quote }}
-              uri: {{ .uri | quote }}
+              uri: {{ .uri | default $uriFromService | quote }}
               predicates:
                 - {{ printf "Path=%s" .path | quote }}
     {{- end }}

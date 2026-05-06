@@ -24,7 +24,12 @@ gateway:
   routes:
     - id: algorycode-rent-service
       path: /api/**
-      uri: http://release-name-algorycode-rent-service.namespace.svc.cluster.local:8090
+      service:
+        name: prod-rent-algorycode-rent-service
+        namespace: ""
+        port: 8090
+        scheme: http
+        clusterDomain: cluster.local
 
 management:
   endpointsWebExposureInclude: health,info,metrics
