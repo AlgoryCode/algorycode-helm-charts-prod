@@ -29,9 +29,6 @@ rabbitmq:
   virtualHost: "/"
 
 app:
-  cors:
-    enabled: false
-    allowedOriginPatterns: "*"
   mail:
     rabbit:
       exchange: algorycode.mail.exchange

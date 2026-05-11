@@ -36,10 +36,6 @@ jwt:
   refreshExpirationMs: "2592000000"
   twoFactorPendingExpirationMs: "300000"
 
-authservice:
-  cors:
-    enabled: "false"
-
 app:
   mail:
     rabbit:

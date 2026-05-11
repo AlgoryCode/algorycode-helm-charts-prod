@@ -19,7 +19,6 @@ data:
   SPRING_SECURITY_JWT_EXPIRATION: {{ .Values.jwt.expirationMs | quote }}
   SPRING_SECURITY_JWT_REFRESH_EXPIRATION: {{ .Values.jwt.refreshExpirationMs | quote }}
   SPRING_SECURITY_JWT_TWO_FACTOR_PENDING_EXPIRATION: {{ .Values.jwt.twoFactorPendingExpirationMs | quote }}
-  AUTHSERVICE_CORS_ENABLED: {{ .Values.authservice.cors.enabled | quote }}
   APP_MAIL_RABBIT_EXCHANGE: {{ .Values.app.mail.rabbit.exchange | quote }}
   APP_MAIL_RABBIT_ROUTING_KEY: {{ .Values.app.mail.rabbit.routingKey | quote }}
   MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "health,info,metrics,prometheus"
