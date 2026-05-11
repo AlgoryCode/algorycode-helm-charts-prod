@@ -4,7 +4,7 @@ replicaCount: 1
 
 image:
   repository: tarikhamarat/algorycode-rent-service
-  tag: latest
+  tag: 25acbf7
   pullPolicy: Always
 
 service:
