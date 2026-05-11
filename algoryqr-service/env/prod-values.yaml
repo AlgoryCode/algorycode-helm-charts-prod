@@ -1,0 +1,33 @@
+fullnameOverride: ""
+
+replicaCount: 1
+
+image:
+  repository: tarikhamarat/algoryqr-service
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 8055
+  annotations: {}
+
+spring:
+  applicationName: algoryqr-service
+  jpa:
+    ddlAuto: update
+    showSql: "false"
+
+datasource:
+  url: jdbc:postgresql://YOUR_PG_HOST:5432/algoryqrdb
+  driverClassName: org.postgresql.Driver
+
+secret:
+  data:
+    springDatasourceUsername: CHANGEME
+    springDatasourcePassword: CHANGEME
+
+ingress:
+  enabled: false
+
+extraEnv: []

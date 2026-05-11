@@ -1,0 +1,86 @@
+replicaCount: 1
+
+nameOverride: ""
+fullnameOverride: ""
+
+image:
+  repository: tarikhamarat/algoryqr-service
+  tag: latest
+  pullPolicy: Always
+
+imagePullSecrets: []
+
+containerPort: 8055
+
+service:
+  type: ClusterIP
+  port: 8055
+  annotations: {}
+
+spring:
+  applicationName: algoryqr-service
+  jpa:
+    ddlAuto: update
+    showSql: "false"
+
+datasource:
+  url: jdbc:postgresql://postgres:5432/algoryqrdb
+  driverClassName: org.postgresql.Driver
+  hikari:
+    keepaliveTimeMs: "30000"
+    connectionTimeoutMs: "8000"
+    idleTimeoutMs: "300000"
+    maxLifetimeMs: "600000"
+    minimumIdle: "2"
+    maximumPoolSize: "10"
+    validationTimeoutMs: "3000"
+
+secret:
+  data:
+    springDatasourceUsername: CHANGEME
+    springDatasourcePassword: CHANGEME
+
+extraEnv: []
+
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "100m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"
+
+podSecurityContext: {}
+securityContext: {}
+
+probes:
+  startup:
+    path: /actuator/health/liveness
+    failureThreshold: 60
+    periodSeconds: 5
+    timeoutSeconds: 10
+  readiness:
+    initialDelaySeconds: 20
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
+  liveness:
+    initialDelaySeconds: 60
+    periodSeconds: 20
+    timeoutSeconds: 5
+
+ingress:
+  enabled: false
+  className: traefik
+  annotations:
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - host: qr.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: qr-example-tls
+      hosts:
+        - qr.example.com

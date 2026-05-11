@@ -23,6 +23,10 @@ rabbitmq:
   port: "5672"
   virtualHost: "/"
 
+app:
+  cors:
+    enabled: false
+
 secret:
   data:
     springRabbitmqUsername: CHANGEME

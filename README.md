@@ -8,15 +8,21 @@
 algorycode-helm-charts-prod/
 ├── README.md
 ├── rent-service/
-│   ├── chart/                 # Helm chart (Chart.yaml, values.yaml, templates/)
+│   ├── chart/
 │   ├── env/
-│   │   └── prod-values.yaml   # Prod override
+│   │   └── prod-values.yaml
 │   └── argo/
-│       └── application.yaml   # Argo CD Application (örnek)
+│       └── application.yaml
+├── rent-auth-service/
+│   ├── chart/
+│   ├── env/
+│   │   └── prod-values.yaml
+│   └── argo/
+│       └── application.yaml
 └── gateway-service/
     ├── chart/
     ├── env/
-    │   └── prod-values.yaml   # gateway.routes[].uri → rent Service DNS
+    │   └── prod-values.yaml   # gateway.routes[] → rent + auth Service DNS
     └── argo/
         └── application.yaml
 ```
@@ -25,7 +31,24 @@ algorycode-helm-charts-prod/
 
 - Kubernetes kümesi (ör. k3s) ve `kubectl` yapılandırması
 - Argo CD kurulu ve **bu Git reposuna erişim** (HTTPS veya SSH)
-- Konteyner imajları (ör. `tarikhamarat/algorycode-rent-service`, `tarikhamarat/gatewayserver`) registry’de mevcut
+- Konteyner imajları (ör. `tarikhamarat/algorycode-rent-service`, `tarikhamarat/algorycode-rent-auth-service`, `tarikhamarat/algorycode-gateway`) registry’de mevcut
+
+## Rent kimlik servisi (`rent-auth-service`)
+
+- Chart Pod’u **8099** portunda açar (`algorycode-rent-auth-service` Spring uygulaması ile uyumlu).
+- **JWT, OAuth client secret, DB ve RabbitMQ** `secret.data` ile verilir; üretimde gerçek değerleri repoya yazmayın.
+- Varsayılan Spring profili chart üzerinden **`SPRING_PROFILES_ACTIVE=prod`** (`application-prod.yml`).
+- Gateway örneği: `Path=/authservice/**` → `prod-rent-auth-algorycode-rent-auth-service.algory-prod.svc.cluster.local:8099` (`gateway-service/env/prod-values.yaml`). Sync sonrası `kubectl get svc -n algory-prod` ile Service adını doğrulayın.
+
+### Yerel Helm denemesi
+
+```bash
+helm install prod-rent-auth ./rent-auth-service/chart \
+  -f ./rent-auth-service/env/prod-values.yaml \
+  --namespace algory-prod --create-namespace
+```
+
+Release **`prod-rent-auth`** için tipik Service adı: **`prod-rent-auth-algorycode-rent-auth-service`**.
 
 ## Rent servisi (`rent-service`)
 
@@ -93,8 +116,8 @@ Her iki dosyada kontrol edin:
 |------|----------|
 | `spec.source.repoURL` | Bu monoreponun Git URL’si |
 | `spec.source.targetRevision` | Örn. `main` |
-| `spec.source.path` | `rent-service/chart` veya `gateway-service/chart` |
-| `spec.source.helm.releaseName` | `prod-rent` / `prod-gateway` (Helm release adı; Service adının parçası) |
+| `spec.source.path` | `rent-service/chart`, `rent-auth-service/chart` veya `gateway-service/chart` |
+| `spec.source.helm.releaseName` | `prod-rent`, `prod-rent-auth`, `prod-gateway` (Helm release adı; Service adının parçası) |
 | `spec.source.helm.valueFiles` | Chart dizinine göre `../env/prod-values.yaml` |
 | `spec.destination.namespace` | Örnek: `algory-prod` |
 | `spec.destination.server` | Varsayılan küme: `https://kubernetes.default.svc` |
@@ -103,6 +126,7 @@ Her iki dosyada kontrol edin:
 
 ```bash
 kubectl apply -n argocd -f rent-service/argo/application.yaml
+kubectl apply -n argocd -f rent-auth-service/argo/application.yaml
 kubectl apply -n argocd -f gateway-service/argo/application.yaml
 ```
 
@@ -110,9 +134,9 @@ Argo CD UI’da **Applications** listesinde görünür; **Sync** ile kükeye yay
 
 ### 4) Sıra önerisi
 
-1. Önce **rent-service** sync edilsin (Pod ayakta, Service oluşsun).
-2. `kubectl get svc -n algory-prod` ile rent Service adını doğrulayın.
-3. Gerekirse `gateway-service/env/prod-values.yaml` içindeki **`uri`** değerini güncelleyin; gateway Application’ı tekrar sync edin.
+1. **rent-service** ve **rent-auth-service** sync edilsin (Pod ayakta, Service oluşsun).
+2. `kubectl get svc -n algory-prod` ile Service adlarını doğrulayın (`prod-rent-*`, `prod-rent-auth-*`).
+3. Gateway `gateway.routes[].service.name` değerleri bu Service adlarıyla eşleşmelidir; gerekirse `gateway-service/env/prod-values.yaml` güncellenip gateway yeniden sync edilir.
 
 ### 5) k3s ve dış erişim
 
@@ -126,6 +150,6 @@ Kaynak kodda Eureka kaldırıldı (`pom.xml` + `application.yml`). Yeni imajı b
 
 ## Sorun giderme
 
-- **502 / bağlantı reddedildi (gateway → rent)**: `gateway.routes[].service.name` ve `gateway.routes[].service.namespace` değerleri rent Service adı ve namespace ile birebir uyumlu mu kontrol edin.
+- **502 / bağlantı reddedildi (gateway → rent veya auth)**: `gateway.routes[].service.name` ve `gateway.routes[].service.namespace` değerleri ilgili Kubernetes Service ile birebir uyumlu mu kontrol edin (`/api/**` → rent, `/authservice/**` → auth).
 - **ImagePullBackOff**: `imagePullSecrets` veya registry erişimi.
 - **Helm valueFiles Argo’da bulunamadı**: `path` ile `valueFiles` göreli yolu chart klasöründen doğru mu (`../env/prod-values.yaml`).

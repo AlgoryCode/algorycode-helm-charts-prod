@@ -30,6 +30,7 @@ rabbitmq:
 
 app:
   cors:
+    enabled: false
     allowedOriginPatterns: "*"
   mail:
     rabbit:

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: algorycode-qr-service
+description: Helm chart for algoryqr-service (Algory QR API)
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

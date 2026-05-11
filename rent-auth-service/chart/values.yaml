@@ -1,0 +1,106 @@
+replicaCount: 1
+
+nameOverride: ""
+fullnameOverride: ""
+
+image:
+  repository: tarikhamarat/algorycode-rent-auth-service
+  tag: latest
+  pullPolicy: Always
+
+imagePullSecrets: []
+
+containerPort: 8099
+
+spring:
+  profilesActive: prod
+  applicationName: algorycode-rent-auth-service
+  datasource:
+    url: jdbc:mysql://mysql.example.com:3306/algory_rent_auth
+    driverClassName: com.mysql.cj.jdbc.Driver
+  jpa:
+    ddlAuto: validate
+    showSql: "false"
+
+rabbitmq:
+  host: rabbitmq.algorycode.com
+  port: "5672"
+  virtualHost: "/"
+
+oauth2:
+  google:
+    clientId: CHANGEME
+
+jwt:
+  expirationMs: "7200000"
+  refreshExpirationMs: "2592000000"
+  twoFactorPendingExpirationMs: "300000"
+
+authservice:
+  cors:
+    enabled: "false"
+
+app:
+  mail:
+    rabbit:
+      exchange: algorycode.mail.exchange
+      routingKey: mail.send.requested
+
+secret:
+  data:
+    springDatasourceUsername: CHANGEME
+    springDatasourcePassword: CHANGEME
+    springRabbitmqUsername: CHANGEME
+    springRabbitmqPassword: CHANGEME
+    springSecurityJwtSecret: CHANGEME
+    googleOAuthClientSecret: CHANGEME
+
+extraEnv: []
+
+resources:
+  requests:
+    memory: "512Mi"
+    cpu: "250m"
+  limits:
+    memory: "1Gi"
+    cpu: "1000m"
+
+podSecurityContext: {}
+securityContext: {}
+
+probes:
+  startup:
+    path: /actuator/health/liveness
+    failureThreshold: 60
+    periodSeconds: 5
+    timeoutSeconds: 10
+  readiness:
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
+  liveness:
+    initialDelaySeconds: 90
+    periodSeconds: 20
+    timeoutSeconds: 5
+
+ingress:
+  enabled: false
+  className: traefik
+  annotations:
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - host: auth.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: auth-example-tls
+      hosts:
+        - auth.example.com
+
+service:
+  type: ClusterIP
+  port: 8099
+  annotations: {}

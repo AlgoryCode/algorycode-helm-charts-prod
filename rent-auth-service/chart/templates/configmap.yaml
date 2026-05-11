@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "algorycode-rent-auth-service.fullname" . }}-config
+  labels:
+    {{- include "algorycode-rent-auth-service.labels" . | nindent 4 }}
+data:
+  SERVER_PORT: {{ .Values.containerPort | quote }}
+  SPRING_PROFILES_ACTIVE: {{ .Values.spring.profilesActive | quote }}
+  SPRING_APPLICATION_NAME: {{ .Values.spring.applicationName | quote }}
+  SPRING_DATASOURCE_URL: {{ .Values.spring.datasource.url | quote }}
+  SPRING_DATASOURCE_DRIVER_CLASS_NAME: {{ .Values.spring.datasource.driverClassName | quote }}
+  SPRING_JPA_HIBERNATE_DDL_AUTO: {{ .Values.spring.jpa.ddlAuto | quote }}
+  SPRING_JPA_SHOW_SQL: {{ .Values.spring.jpa.showSql | quote }}
+  SPRING_RABBITMQ_HOST: {{ .Values.rabbitmq.host | quote }}
+  SPRING_RABBITMQ_PORT: {{ .Values.rabbitmq.port | quote }}
+  SPRING_RABBITMQ_VIRTUAL_HOST: {{ .Values.rabbitmq.virtualHost | quote }}
+  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID: {{ .Values.oauth2.google.clientId | quote }}
+  SPRING_SECURITY_JWT_EXPIRATION: {{ .Values.jwt.expirationMs | quote }}
+  SPRING_SECURITY_JWT_REFRESH_EXPIRATION: {{ .Values.jwt.refreshExpirationMs | quote }}
+  SPRING_SECURITY_JWT_TWO_FACTOR_PENDING_EXPIRATION: {{ .Values.jwt.twoFactorPendingExpirationMs | quote }}
+  AUTHSERVICE_CORS_ENABLED: {{ .Values.authservice.cors.enabled | quote }}
+  APP_MAIL_RABBIT_EXCHANGE: {{ .Values.app.mail.rabbit.exchange | quote }}
+  APP_MAIL_RABBIT_ROUTING_KEY: {{ .Values.app.mail.rabbit.routingKey | quote }}
+  MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "health,info,metrics,prometheus"
+  MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED: "true"
+  MANAGEMENT_HEALTH_LIVENESSSTATE_ENABLED: "true"
+  MANAGEMENT_HEALTH_READINESSSTATE_ENABLED: "true"

@@ -1,0 +1,46 @@
+fullnameOverride: ""
+
+replicaCount: 1
+
+image:
+  repository: tarikhamarat/algorycode-rent-auth-service
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 8099
+  annotations: {}
+
+spring:
+  profilesActive: prod
+  applicationName: algorycode-rent-auth-service
+  datasource:
+    url: jdbc:mysql://mysql.algorycode.com:3306/algory_rent_auth
+    driverClassName: com.mysql.cj.jdbc.Driver
+  jpa:
+    ddlAuto: validate
+    showSql: "false"
+
+rabbitmq:
+  host: rabbitmq.algorycode.com
+  port: "5672"
+  virtualHost: "/"
+
+oauth2:
+  google:
+    clientId: CHANGEME
+
+secret:
+  data:
+    springDatasourceUsername: CHANGEME
+    springDatasourcePassword: CHANGEME
+    springRabbitmqUsername: CHANGEME
+    springRabbitmqPassword: CHANGEME
+    springSecurityJwtSecret: CHANGEME
+    googleOAuthClientSecret: CHANGEME
+
+ingress:
+  enabled: false
+
+extraEnv: []

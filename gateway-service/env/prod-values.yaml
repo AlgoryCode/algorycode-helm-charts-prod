@@ -12,6 +12,14 @@ service:
 
 gateway:
   routes:
+    - id: algorycode-rent-auth-service
+      path: /authservice/**
+      service:
+        name: prod-rent-auth-algorycode-rent-auth-service
+        namespace: algory-prod
+        port: 8099
+        scheme: http
+        clusterDomain: cluster.local
     - id: algorycode-rent-service
       path: /api/**
       service:

@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "algorycode-qr-service.fullname" . }}-config
+  labels:
+    {{- include "algorycode-qr-service.labels" . | nindent 4 }}
+data:
+  SERVER_PORT: {{ .Values.containerPort | quote }}
+  SPRING_APPLICATION_NAME: {{ .Values.spring.applicationName | quote }}
+  SPRING_DATASOURCE_URL: {{ .Values.datasource.url | quote }}
+  SPRING_DATASOURCE_DRIVER_CLASS_NAME: {{ .Values.datasource.driverClassName | quote }}
+  SPRING_JPA_HIBERNATE_DDL_AUTO: {{ .Values.spring.jpa.ddlAuto | quote }}
+  SPRING_JPA_SHOW_SQL: {{ .Values.spring.jpa.showSql | quote }}
+  SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: "org.hibernate.dialect.PostgreSQLDialect"
+  SPRING_DATASOURCE_HIKARI_KEEPALIVE_TIME: {{ .Values.datasource.hikari.keepaliveTimeMs | quote }}
+  SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT: {{ .Values.datasource.hikari.connectionTimeoutMs | quote }}
+  SPRING_DATASOURCE_HIKARI_IDLE_TIMEOUT: {{ .Values.datasource.hikari.idleTimeoutMs | quote }}
+  SPRING_DATASOURCE_HIKARI_MAX_LIFETIME: {{ .Values.datasource.hikari.maxLifetimeMs | quote }}
+  SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE: {{ .Values.datasource.hikari.minimumIdle | quote }}
+  SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: {{ .Values.datasource.hikari.maximumPoolSize | quote }}
+  SPRING_DATASOURCE_HIKARI_VALIDATION_TIMEOUT: {{ .Values.datasource.hikari.validationTimeoutMs | quote }}
+  MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "*"
+  MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED: "true"
+  MANAGEMENT_HEALTH_LIVENESSSTATE_ENABLED: "true"
+  MANAGEMENT_HEALTH_READINESSSTATE_ENABLED: "true"
+  MANAGEMENT_ENDPOINT_SHUTDOWN_ACCESS: "unrestricted"
+  MANAGEMENT_INFO_ENV_ENABLED: "true"

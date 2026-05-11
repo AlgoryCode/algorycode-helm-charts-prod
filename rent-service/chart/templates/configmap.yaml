@@ -15,6 +15,7 @@ data:
   SPRING_RABBITMQ_HOST: {{ .Values.rabbitmq.host | quote }}
   SPRING_RABBITMQ_PORT: {{ .Values.rabbitmq.port | quote }}
   SPRING_RABBITMQ_VIRTUAL_HOST: {{ .Values.rabbitmq.virtualHost | quote }}
+  APP_CORS_ENABLED: {{ .Values.app.cors.enabled | default false | quote }}
   APP_CORS_ALLOWED_ORIGIN_PATTERNS: {{ .Values.app.cors.allowedOriginPatterns | quote }}
   APP_MAIL_RABBIT_EXCHANGE: {{ .Values.app.mail.rabbit.exchange | quote }}
   APP_MAIL_RABBIT_ROUTING_KEY: {{ .Values.app.mail.rabbit.routingKey | quote }}
